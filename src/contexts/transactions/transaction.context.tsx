@@ -2,6 +2,7 @@ import { createContext, ReactNode, useCallback, useEffect, useState } from "reac
 import {v4 as uuid} from 'uuid'
 
 import { clientHttp } from "../../common/axios";
+import { useAuth } from "../auth/auth.context";
 import { AddTransactionInputDTO } from "./add-transaction.dto";
 
 type IFilterType = "account" | "type" | "approved" | "needs_review";
@@ -20,7 +21,8 @@ export type ITransaction = {
   description: string
   type: string
   approved: boolean
-  needs_review: boolean
+  needs_review: boolean,
+  receipt_url: string,
   created_at: string
 }
 
@@ -47,12 +49,19 @@ function TransactionsProvider({children}:ITransactionsProviderProps) {
 
   async function addTransaction(transaction: AddTransactionInputDTO) {
     const result = await clientHttp.post('transactions', {
-      ...transaction,
       id: uuid(),
-      account: "1",
+      account: transaction.account,
+      amount: transaction.amount,
+      description: transaction.description,
+      receipt: transaction.receipt,
+      type: transaction.type,
       needs_review: transaction.type === 'deposit' ? true : false,
       approved: transaction.type === 'deposit' ? false : true,
       created_at: new Date().toISOString()
+    }, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
     });
 
     setTransactions((oldState) => [result.data, ...oldState]);
@@ -62,7 +71,7 @@ function TransactionsProvider({children}:ITransactionsProviderProps) {
     const transaction = await fetchTransaction(transactionId)
 
     if(transaction) {
-      const result = await clientHttp.put(`transactions/${transactionId}`, {
+      const result = await clientHttp.put(`transactions/${transactionId}/send-for-approval`, {
         ...transaction,
         approved,
         needs_review: false

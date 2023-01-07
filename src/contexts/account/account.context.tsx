@@ -1,5 +1,5 @@
-import { createContext, ReactNode, useCallback, useEffect, useState } from "react";
-import { clientHttp } from "../../common/axios";
+import { createContext, ReactNode, useEffect, useState } from "react";
+import { useAuth } from "../auth/auth.context";
 
 type IBalance = {
   deposits: number
@@ -15,7 +15,6 @@ export type IAccount = {
 
 type IAccountContext = {
   account: IAccount,
-  fetchAccount: (ownerId: string) => Promise<void>
 }
 
 type IAccountProviderProps = {
@@ -24,7 +23,6 @@ type IAccountProviderProps = {
 
 const AccountContext = createContext<IAccountContext>({
   account: {} as IAccount,
-  fetchAccount: async (ownerId: string) => {}
 })
 
 function AccountProvider({children}:IAccountProviderProps) {
@@ -37,28 +35,21 @@ function AccountProvider({children}:IAccountProviderProps) {
       total: 0
     }
   } as IAccount)
-  const userId = "1"
   
-  async function fetchAccount(ownerId: string) {
-
-    const result = await clientHttp.get(`account`, {
-      params: {
-        owner: ownerId
-      }
-    })
-    
-    setAccount(result.data)
+  const {user} = useAuth()
+  
+  async function fetchAccount() {
+    if(user) {
+      setAccount(user.account)
+    }
   }
 
   useEffect(() => {
-    void fetchAccount(userId)
-  }, [])
+    void fetchAccount()
+  }, [user])
 
   return (
-    <AccountContext.Provider value={{
-      account,
-      fetchAccount
-    }}>
+    <AccountContext.Provider value={{account}}>
       {children}
     </AccountContext.Provider>
   )

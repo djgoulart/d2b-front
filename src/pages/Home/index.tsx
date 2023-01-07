@@ -2,16 +2,19 @@ import React, { useContext, useEffect } from 'react';
 import { Flex } from '@chakra-ui/react';
 
 import Header from '../../components/Header';
-import Transactions from '../../components/Transactions';
 import { TransactionsContext } from '../../contexts/transactions/transaction.context';
 import AccountTransactions from '../../components/Transactions/account-transactions';
+import { useAuth } from '../../contexts/auth/auth.context';
 
 function Home() {
   const {transactions, fetchTransactions} = useContext(TransactionsContext)
-
+  const {user} = useAuth()
+  
   useEffect(() => {
-    void fetchTransactions({account: "1"})
-  }, [])
+    if (user && user.account) {
+      void fetchTransactions({account: user.account.id})
+    }
+  }, [user])
 
   return (
     <>

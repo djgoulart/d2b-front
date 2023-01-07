@@ -69,7 +69,7 @@ function ManageTransactionForm({isOpen, onClose, data}:IProps) {
               </VStack>
               
               <Box>
-                <Image w="100%" maxW="500px" maxH="400px" src="https://cdn.filestackcontent.com/8JfnriglThKnjkowMOhL" title="comprovante" />
+                <Image w="100%" maxW="500px" maxH="400px" src={data.receipt_url} title="comprovante" />
               </Box>
             </VStack>
           </ModalBody>

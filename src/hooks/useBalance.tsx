@@ -1,4 +1,5 @@
 import { useContext, useEffect } from "react";
+import { useAuth } from "../contexts/auth/auth.context";
 import { TransactionsContext } from "../contexts/transactions/transaction.context";
 
 type IBalanceOutput = {
@@ -11,10 +12,11 @@ type IBalanceOutput = {
 
 export function useBalance(): [IBalanceOutput] {
   const {transactions, fetchTransactions} = useContext(TransactionsContext)
+  const {user} = useAuth()
 
   useEffect(() => {
     if(transactions.length < 1) {
-      fetchTransactions({account: "1"})
+      fetchTransactions({account: user?.account.id})
     }
   }, [])
 

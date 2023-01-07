@@ -24,7 +24,7 @@ function AccountBalance(){
           w={352} 
           title='Deposits' 
           color="brand.shape" icon='' />
-        <Card w={352} title='Withdraws' text={numberFormat(expenses)} color="brand.shape" icon='' />
+        <Card w={352} title='Expenses' text={numberFormat(expenses)} color="brand.shape" icon='' />
         <Card w={352} textColor="white" title='Total' text={numberFormat(deposits.approved - expenses)} color="brand.green" icon='' />
       </HStack>
   );
