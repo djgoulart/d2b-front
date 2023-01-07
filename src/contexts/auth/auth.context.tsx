@@ -15,7 +15,7 @@ type IAuthContext = {
   user: IUser | undefined;
   isAuthenticated: () => boolean;
   authToken: string | undefined;
-  login: (data: ILoginInputDTO) => Promise<void>
+  login: (data: ILoginInputDTO, callback: VoidFunction) => Promise<void>
   logout: (callback: VoidFunction) => Promise<void>
 }
 
@@ -53,7 +53,7 @@ export function AuthProvider(props: IAuthProviderProps) {
     return false;
   }
 
-  async function login(data: ILoginInputDTO): Promise<void> {
+  async function login(data: ILoginInputDTO, callback: VoidFunction): Promise<void> {
     const result = await clientHttp.post('auth/login', data)
 
     if(result.data) {
@@ -61,6 +61,8 @@ export function AuthProvider(props: IAuthProviderProps) {
       localStorage.setItem('d2b:authToken', JSON.stringify(result.data.token))
       setUser(result.data.user)
       setAuthToken(result.data.token)
+
+      setTimeout(callback, 100);
     }
   }
 
