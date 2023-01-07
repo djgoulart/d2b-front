@@ -33,8 +33,8 @@ function TransactionForm({isOpen, onClose}:ITransactionFormProps) {
 
       return;
     }
-    await addTransaction({...transaction, receipt: image})
-    onClose()
+    await addTransaction({...transaction})
+    handleClose()
   }
 
   function handleClose() {
@@ -61,10 +61,10 @@ function TransactionForm({isOpen, onClose}:ITransactionFormProps) {
   }
 
   useEffect(() => {
-    let fileReader, isCancel = false;
+    let fileReader:any, isCancel = false;
     if (image) {
       fileReader = new FileReader();
-      fileReader.onload = (e) => {
+      fileReader.onload = (e:any) => {
         const { result } = e.target;
         if (result && !isCancel) {
           setImageDataURL(result)
@@ -150,7 +150,8 @@ function TransactionForm({isOpen, onClose}:ITransactionFormProps) {
                 description, 
                 type: type || 'deposit', 
                 amount: amount * 100,
-                account: user?.account.id!!
+                account: user?.account.id!!,
+                receipt: image
               })}
             >Save</Button>
           </ModalFooter>
