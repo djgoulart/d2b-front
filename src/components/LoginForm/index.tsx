@@ -19,15 +19,13 @@ function LoginForm() {
 
   const {login} = useAuth()
 
-  const onSubmit = async (e:FormEvent) => {
-    e.preventDefault();
-  
+  const onSubmit = async (data:ILoginInputDTO) => {
     await login(data);
   }
 
   return (
-    <form onSubmit={onSubmit}>
-      <FormControl isInvalid={errors.email}>
+    <form onSubmit={(e) => { e.preventDefault(); handleSubmit(onSubmit)}}>
+      <FormControl isInvalid={!!errors.email}>
         <FormLabel htmlFor='name'>Email</FormLabel>
         <Input
           id='email'
@@ -40,7 +38,7 @@ function LoginForm() {
           {errors.email && errors.email.message}
         </FormErrorMessage>
       </FormControl>
-      <FormControl isInvalid={errors.password}>
+      <FormControl isInvalid={!!errors.password}>
         <FormLabel htmlFor='name'>Password</FormLabel>
         <Input
           id='password'
