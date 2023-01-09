@@ -10,6 +10,7 @@ import { RouterProvider } from 'react-router-dom'
 import { TransactionsProvider } from './contexts/transactions/transaction.context'
 import { AccountProvider } from './contexts/account/account.context'
 import { AuthProvider } from './contexts/auth/auth.context'
+import PageNotFound from './PageNotFound'
 
 Axios.get('http://localhost/sanctum/csrf-cookie', {withCredentials: true})
 

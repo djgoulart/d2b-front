@@ -13,7 +13,7 @@ import {
 } from '@chakra-ui/react';
 
 import FormInput from '../../components/FormInput';
-import { useAuth } from '../../contexts/auth/auth.context';
+import { useAuth, USER_ROLES } from '../../contexts/auth/auth.context';
 const schema = yup.object().shape({
   email: yup
     .string()
@@ -48,8 +48,8 @@ export default function Login(): JSX.Element {
   async function handleFormSubmit(form: FieldValues) {
     const { email, password } = form as IFormData;
 
-    await login({ email, password }, () => {
-      navigate(from, { replace: true });
+    await login({ email, password }, (roleId: USER_ROLES) => {
+      navigate('/', { replace: true });
     });
   }
 

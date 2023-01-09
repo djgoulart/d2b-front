@@ -1,12 +1,19 @@
 import React from 'react'
-import { Heading } from '@chakra-ui/react'
+import { Heading, Text } from '@chakra-ui/react'
+import { useAuth, USER_ROLES } from './contexts/auth/auth.context'
+import Home from './pages/Home'
+import Admin from './pages/Admin'
 
 function App() {
-
+  const {user} = useAuth()
   return (
-      <div className="App">
-        <Heading fontFamily={'heading'} color={"brand.blue"}>D2B - Bank</Heading>
-      </div>
+    user && user.roleId === USER_ROLES.CUSTOMER 
+    ? <Home /> 
+    : user && user.roleId === USER_ROLES.ADMIN 
+    ? <Admin />
+    : (
+      <Text>You don't have a valid access</Text>
+    )
   )
 }
 

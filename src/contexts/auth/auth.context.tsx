@@ -1,12 +1,19 @@
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { clientHttp } from "../../common/axios";
 import {IAccount } from "../account/account.context";
 import { ILoginInputDTO } from "./login-input.dto";
 import { ISignUpInputDTO } from "./signup-input.dto";
 
+export enum USER_ROLES {
+  CUSTOMER = 1,
+  ADMIN = 2
+}
+
 type IUser = {
   id: string;
   name: string;
+  roleId: USER_ROLES;
   email: string;
   token: string;
   account: IAccount
@@ -16,8 +23,8 @@ type IAuthContext = {
   user: IUser | undefined;
   isAuthenticated: () => boolean;
   authToken: string | undefined;
-  login: (data: ILoginInputDTO, callback: VoidFunction) => Promise<void>
-  signUp: (data: ISignUpInputDTO, callback: VoidFunction) => Promise<void>
+  login: (data: ILoginInputDTO, callBack: (roleId:number) => void) => Promise<void>
+  signUp: (data: ISignUpInputDTO, callBack: VoidFunction) => Promise<void>
   logout: (callback: VoidFunction) => Promise<void>
 }
 
@@ -55,7 +62,7 @@ export function AuthProvider(props: IAuthProviderProps) {
     return false;
   }
 
-  async function login(data: ILoginInputDTO, callback: VoidFunction): Promise<void> {
+  async function login(data: ILoginInputDTO, callBack: (roleId:number) => void): Promise<void> {
     const result = await clientHttp.post('auth/login', data)
 
     if(result.data) {
@@ -64,7 +71,7 @@ export function AuthProvider(props: IAuthProviderProps) {
       setUser(result.data.user)
       setAuthToken(result.data.token)
 
-      setTimeout(callback, 100);
+      setTimeout(() => callBack(result.data.user.roleId), 100);
     }
   }
 
@@ -77,11 +84,11 @@ export function AuthProvider(props: IAuthProviderProps) {
     setTimeout(callback, 100);
   }
 
-  async function signUp(data: ISignUpInputDTO, callback: VoidFunction): Promise<void> {
+  async function signUp(data: ISignUpInputDTO, callBack: VoidFunction): Promise<void> {
     const result = await clientHttp.post('users', data)
 
     if(result.data) {
-      setTimeout(callback, 100);
+      setTimeout(callBack, 100);
     }
   }
 

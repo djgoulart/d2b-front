@@ -61,6 +61,14 @@ function TransactionForm({isOpen, onClose}:ITransactionFormProps) {
   }
 
   useEffect(() => {
+    if(type === 'deposit') {
+      setValidation({
+        amount: true
+      })
+    }
+  }, [type])
+
+  useEffect(() => {
     let fileReader:any, isCancel = false;
     if (image) {
       fileReader = new FileReader();

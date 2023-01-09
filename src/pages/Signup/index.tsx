@@ -39,7 +39,6 @@ export default function SignUp(): JSX.Element {
   const navigate = useNavigate();
   const location = useLocation();
   const {signUp, isAuthenticated} = useAuth();
-  const from = location.state?.from?.pathname || '/';
 
   const {
     control,
@@ -54,7 +53,7 @@ export default function SignUp(): JSX.Element {
 
     if(await schema.validate({ name, email, password, password_confirmation })) {
       await signUp({ name, email, password, password_confirmation }, () => {
-        navigate(from, { replace: true });
+        navigate('/login', { replace: true });
       });
     }
   }
