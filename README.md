@@ -1,20 +1,12 @@
-<p align="center"><a href="javascript:void(0)" target="_blank"><img src="https://raw.githubusercontent.com/djgoulart/d2b-back/main/public/logo.svg" width="400" alt="D2B Logo"></a></p>
+<p align="center"><a href="javascript:void(0)" target="_blank"><img src="https://raw.githubusercontent.com/djgoulart/d2b-front/main/public/logo.png" width="400" alt="D2B Logo"></a></p>
 
-<p align="center">
+## About D2B Frontend
 
-</p>
+This project is the frontend part of the [TydyDaily challenge](https://github.com/TidyDaily/developer-test). 
 
-## About D2B Backend (work in progress)
+# Project Overview
 
-This project is <b>in development</b> and is the backend part of the [TydyDaily challenge](https://github.com/TidyDaily/developer-test). 
-
-# Project Structure
-
-The project was built using (DDD) Domain Driven Design and (TDD) Test Driven Development. The Domain structure was built inside the src directory as illustrated below.
-
-<p>
-<img src="https://raw.githubusercontent.com/djgoulart/d2b-front/main/public/logo.png" width="400" alt="D2B Logo">
-</p>
+The project was built using ReactJS and ChakraUI.
 
 <br />
 
