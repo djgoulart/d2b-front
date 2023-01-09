@@ -5,14 +5,14 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import logoImg from "../../assets/d2b.svg"
 import TransactionForm from '../TransactionForm';
 import AccountBalance from '../AccountBalance';
-import { useAuth } from '../../contexts/auth/auth.context';
+import { useAuth, USER_ROLES } from '../../contexts/auth/auth.context';
 
 function Header() {
   const location = useLocation()
   const from = location.state?.from?.pathname || '/';
   const { isOpen, onOpen, onClose } = useDisclosure()
   const navigate = useNavigate()
-  const {logout} = useAuth()
+  const {logout, user} = useAuth()
 
   function handleLogout() {
     logout(() => {
@@ -33,16 +33,19 @@ function Header() {
         <HStack w="100%" mt="4" maxW={1140} justifyContent="space-between">
           <Image src={logoImg} title="d2b logo" alt="d2b logo" />
           <HStack>
-          { location.pathname === '/' 
+          { location.pathname === '/' && user?.roleId === USER_ROLES.CUSTOMER
             && <Button onClick={onOpen}>Add Transaction</Button> 
           }
           <Button justifySelf="flex-end" onClick={handleLogout}>Logout</Button>
           </HStack>
         </HStack>
       </Flex>
-      <AccountBalance />
+      {
+        user?.roleId === USER_ROLES.CUSTOMER
+        && <AccountBalance />
+      }
 
-      { location.pathname === '/' 
+      { location.pathname === '/' && user?.roleId === USER_ROLES.CUSTOMER 
           && <TransactionForm isOpen={isOpen} onClose={onClose} /> }
     </Flex>
   );
