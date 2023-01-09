@@ -4,6 +4,7 @@ import Admin from "./pages/Admin";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import { RequireAuth } from "./pages/Login/RequireAuth";
+import SignUp from "./pages/Signup";
 
 export const router = createBrowserRouter([
   
@@ -18,5 +19,9 @@ export const router = createBrowserRouter([
   {
     path: "/login",
     element: <Login />
+  },
+  {
+    path: "/signup",
+    element: <SignUp />
   },
 ]);

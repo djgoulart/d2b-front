@@ -2,6 +2,7 @@ import { createContext, ReactNode, useContext, useEffect, useState } from "react
 import { clientHttp } from "../../common/axios";
 import {IAccount } from "../account/account.context";
 import { ILoginInputDTO } from "./login-input.dto";
+import { ISignUpInputDTO } from "./signup-input.dto";
 
 type IUser = {
   id: string;
@@ -16,6 +17,7 @@ type IAuthContext = {
   isAuthenticated: () => boolean;
   authToken: string | undefined;
   login: (data: ILoginInputDTO, callback: VoidFunction) => Promise<void>
+  signUp: (data: ISignUpInputDTO, callback: VoidFunction) => Promise<void>
   logout: (callback: VoidFunction) => Promise<void>
 }
 
@@ -75,8 +77,16 @@ export function AuthProvider(props: IAuthProviderProps) {
     setTimeout(callback, 100);
   }
 
+  async function signUp(data: ISignUpInputDTO, callback: VoidFunction): Promise<void> {
+    const result = await clientHttp.post('users', data)
+
+    if(result.data) {
+      setTimeout(callback, 100);
+    }
+  }
+
   return (
-    <AuthContext.Provider value={{user, authToken, isAuthenticated, login, logout}}>
+    <AuthContext.Provider value={{user, authToken, isAuthenticated, login, logout, signUp}}>
       {children}
     </AuthContext.Provider>
   )

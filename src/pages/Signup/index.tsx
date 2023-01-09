@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { FieldValues, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -15,23 +15,30 @@ import {
 import FormInput from '../../components/FormInput';
 import { useAuth } from '../../contexts/auth/auth.context';
 const schema = yup.object().shape({
+  name: yup
+    .string()
+    .required('The name is a required field'),
   email: yup
     .string()
     .email('Please provide a valid e-mail address and try again.')
     .required('The e-mail field is required.'),
   password: yup.string().required('The password is required.'),
+  password_confirmation: yup.string()
+     .oneOf([yup.ref('password'), null], 'Passwords must match')
 });
 
 interface IFormData {
+  name: string;
   email: string;
   password: string;
+  password_confirmation: string;
   rememberUser: string;
 }
 
-export default function Login(): JSX.Element {
+export default function SignUp(): JSX.Element {
   const navigate = useNavigate();
   const location = useLocation();
-  const {login, isAuthenticated} = useAuth();
+  const {signUp, isAuthenticated} = useAuth();
   const from = location.state?.from?.pathname || '/';
 
   const {
@@ -42,15 +49,14 @@ export default function Login(): JSX.Element {
     resolver: yupResolver(schema),
   });
 
-  const [showPassword, setShowPassword] = React.useState(false);
-  const handleShowPassword = (): void => setShowPassword(oldstate => !oldstate);
-
   async function handleFormSubmit(form: FieldValues) {
-    const { email, password } = form as IFormData;
+    const { name, email, password, password_confirmation } = form as IFormData;
 
-    await login({ email, password }, () => {
-      navigate(from, { replace: true });
-    });
+    if(await schema.validate({ name, email, password, password_confirmation })) {
+      await signUp({ name, email, password, password_confirmation }, () => {
+        navigate(from, { replace: true });
+      });
+    }
   }
 
   
@@ -60,16 +66,35 @@ export default function Login(): JSX.Element {
   
 
   return (
-    <VStack w="full" h={'100vh'} justifyContent="center">
+    <VStack w="full" h={'100vh'} justifyContent='center'>
       
       <VStack as="main" justifySelf="flex-start">
         <HStack>
           <Text fontFamily={'body'} fontSize={'xl'}>
-            Access your {<strong>Account</strong>}
+            Create your {<strong> D2B Account</strong>}
           </Text>
         </HStack>
         <VStack pt={10} w={'100%'} maxW={'482px'} px="4">
           <Stack spacing={2}>
+            <InputGroup>
+              <FormInput
+                name="name"
+                control={control}
+                error={errors.name && errors.name.message}
+                size={'lg'}
+                type={'text'}
+                w={['300px', '360px', '450px']}
+                h={'40px'}
+                focusBorderColor="brand.green"
+                placeholder="Your name"
+                borderColor="brand.text"
+                _placeholder={{
+                  fontSize: 'md',
+                  opacity: 1,
+                  color: 'brand.title',
+                }}
+              />
+            </InputGroup>
             <InputGroup>
               <FormInput
                 name="email"
@@ -95,11 +120,30 @@ export default function Login(): JSX.Element {
                 control={control}
                 error={errors.password && errors.password.message}
                 size={'lg'}
-                type={showPassword ? 'text' : 'password'}
+                type={'password'}
                 w={['300px', '360px', '450px']}
                 h={'40px'}
                 focusBorderColor="brand.green"
-                placeholder="Password"
+                placeholder="password"
+                borderColor="brand.text"
+                _placeholder={{
+                  fontSize: 'md',
+                  opacity: 1,
+                  color: 'brand.title',
+                }}
+              />
+            </InputGroup>
+            <InputGroup>
+              <FormInput
+                name="password_confirmation"
+                control={control}
+                error={errors.password_confirmation && errors.password_confirmation.message}
+                size={'lg'}
+                type={'password'}
+                w={['300px', '360px', '450px']}
+                h={'40px'}
+                focusBorderColor="brand.green"
+                placeholder="confirm your password"
                 borderColor="brand.text"
                 _placeholder={{
                   fontSize: 'md',
@@ -112,7 +156,6 @@ export default function Login(): JSX.Element {
           
           <Stack w="100%" pt={'6'} spacing={6} alignItems={'flex-start'}>
             
-            <Text>Don't have an account? <Link to="/signup"><Text as="span" textDecor="underline">Sign up now!</Text></Link></Text>
             <Button
               onClick={handleSubmit(handleFormSubmit)}
               bg="brand.green"
@@ -121,7 +164,7 @@ export default function Login(): JSX.Element {
                 bg: 'brand.green',
               }}
             >
-              Signin
+              Signup
             </Button>
           </Stack>
         </VStack>
